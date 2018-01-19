@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import Styles from '../../assets/styles';
 import Container from '../../components/container';
 import Button from '../../components/button';
+import Backendless from 'backendless';
+import { setProfile } from '../../actions/profile';
 
 class LogIn extends Component {
   static propTypes = {
@@ -41,29 +43,42 @@ class LogIn extends Component {
       this.props.alertWithType('error', 'Error', 'Fill in all fields');
     } else {
       this.setState({ animating: true });
-      setTimeout(() => {
+      Backendless.UserService.login(email, password, rememberLogIn)
+      .then((loggedInUser) => {
         this.setState({ animating: false });
-        AsyncStorage.setItem('loggedIn', JSON.stringify(rememberLogIn)).then(() => {
-          this.props.navigation.dispatch({
-            type: 'Navigation/RESET',
-            index: 0,
-            actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Main' }],
-          });
-        });
-      }, 3000);
+        this.props.dispatch(setProfile(loggedInUser)); 
+        if (rememberLogIn) {
+          AsyncStorage.setItem('userId', loggedInUser.objectId)
+          .then(() => this.navigate())
+          .catch(error => console.log(error));
+        } else {
+          this.navigate();
+        }
+      })
+      .catch((error) => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)))
     }
+  }
+
+  navigate = () => {
+    this.props.navigation.dispatch({
+      type: 'Navigation/RESET',
+      index: 0,
+      actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Main' }],
+    });
   }
 
   forgotPassword() {
     const { email } = this.state;
-
     if (email === '') {
       this.props.alertWithType('error', 'Error', 'Enter email');
     } else {
       this.setState({ animating: true });
+      Backendless.UserService.restorePassword(email)
+      .then(() => this.setState({ animating: false }, () => this.props.alertWithType('success', 'Success', 'Password reset link sent')))
+      .catch(error => this.setState({ animating: false}, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)))
       setTimeout(() => {
-        this.setState({ animating: false });
-        this.props.alertWithType('success', 'Success', 'Password reset link sent');
+        ;
+        ;
       }, 3000);
     }
   }

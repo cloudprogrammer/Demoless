@@ -10,9 +10,11 @@ import {
 import { connect } from 'react-redux';
 import CircleSnail from 'react-native-progress/CircleSnail';
 import PropTypes from 'prop-types';
+import Backendless from 'backendless';
 import Styles from '../../assets/styles';
 import Container from '../../components/container';
 import Button from '../../components/button';
+import { setProfile } from '../../actions/profile';
 
 class Register extends Component {
   static propTypes = {
@@ -39,9 +41,18 @@ class Register extends Component {
       this.props.alertWithType('error', 'Error', 'Fill in all fields');
     } else {
       this.setState({ animating: true });
-      setTimeout(() => {
-        this.props.alertWithType('success', 'Success', 'Registered');
-      }, 2500);
+      const newUser = new Backendless.User({
+        username,
+        password,
+        email,
+      });
+      Backendless.UserService.register(newUser)
+      .then((registeredUser) => {
+        this.setState({ animating: false });
+        this.props.alertWithType('success', 'Success', 'Registered successfully');
+        this.props.navigation.goBack();
+      })
+      .catch(error => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)));
     }
   }
 
@@ -84,7 +95,7 @@ class Register extends Component {
             selectionColor={this.props.accent}
             underlineColorAndroid="transparent"
             ref={(input) => { this.usernameField = input; }}
-            onChangeText={text => this.setState({ email: text })}
+            onChangeText={text => this.setState({ username: text })}
             onSubmitEditing={() => this.passwordField.focus()}
           />
           <TextInput

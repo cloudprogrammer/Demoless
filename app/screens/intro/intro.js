@@ -73,7 +73,7 @@ class Intro extends Component {
         <this.InfoModal />
         <View style={{ justifyContent: 'center', flex: 1 }}>
           <View style={{ alignItems: 'center', flex: 1, paddingTop: 50 }}>
-            <Text style={{ fontSize: 40, color: this.props.text, backgroundColor: 'transparent' }}>Skeleton</Text>
+            <Text style={{ fontSize: 40, color: this.props.text, backgroundColor: 'transparent' }}>Demoless</Text>
           </View>
           <View
             style={{

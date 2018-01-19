@@ -41,7 +41,11 @@ class Drawer extends Component {
       <Container background={this.props.background}>
         <View style={{ borderRightColor: this.props.accent, borderRightWidth: 2, flex: 1 }}>
           <View style={{ alignItems: 'flex-start', paddingTop: 20, paddingLeft: 16 }}>
-            <TouchableOpacity onPress={() => null}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('Profile');
+              }}
+            >
               <View style={{ alignItems: 'center' }}>
                 <ProfileImage
                   showBorder

@@ -52,6 +52,7 @@ module.exports = EStyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
+    textAlign: 'left',
   },
   // Progress
   progressContainer: {

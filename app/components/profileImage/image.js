@@ -7,7 +7,7 @@ const ProfileImage = ({
   accent, url, showBorder, size,
 }) => (
   <Image
-    source={!url ? require('./avatarplaceholder.png') : { uri: `${url}` }}
+    source={!url || url === '' ? require('./avatarplaceholder.png') : { uri: `${url}` }}
     style={{
       width: size,
       height: size,

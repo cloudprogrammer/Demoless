@@ -34,7 +34,7 @@ class Settings extends Component {
 
   setLight = () => {
     this.props.dispatch(updateTheme(
-      styles.$_blueBack,
+      styles.$_backgroundLight,
       styles.$_red,
       styles.$_black,
       styles.$_red,
@@ -42,7 +42,7 @@ class Settings extends Component {
       styles.$_redGradient,
     ));
     this.saveTheme(
-      styles.$_blueBack,
+      styles.$_backgroundLight,
       styles.$_red,
       styles.$_black,
       styles.$_red,
@@ -54,19 +54,19 @@ class Settings extends Component {
   setDark = () => {
     this.props.dispatch(updateTheme(
       styles.$_backgroundDark,
-      styles.$_blue,
+      styles.$_red,
       styles.$_white,
-      styles.$_blue,
+      styles.$_red,
       styles.$_rowColor,
-      styles.$_blueGradient,
+      styles.$_redGradient,
     ));
     this.saveTheme(
-      styles.$_backgroundDark,
-      styles.$_blue,
-      styles.$_white,
-      styles.$_blue,
-      styles.$_rowColor,
-      styles.$_blueGradient,
+      styles.$_backgroundLight,
+      styles.$_red,
+      styles.$_black,
+      styles.$_red,
+      styles.$_rowColorLight,
+      styles.$_redGradient,
     );
   }
 

@@ -1,12 +1,12 @@
 import { UPDATE_THEME } from '../actions/theme';
 
 const initState = {
-  backgroundPrimary: '#2c2929',
-  accent: '#40c4ff',
-  text: '#fff',
-  rowColor: '#313131',
-  header: '#40c4ff',
-  gradient: '#73F7FF',
+  backgroundPrimary: '#f2f2f2',
+  accent: '#ef5350',
+  text: '#000',
+  rowColor: '#fff',
+  header: '#ef5350',
+  gradient: '#FF6D6A',
 };
 
 const reducer = (state = initState, action) => {
