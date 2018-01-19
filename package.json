@@ -1,5 +1,5 @@
 {
-  "name": "skeleton",
+  "name": "demoless",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "babel-eslint": "^8.2.1",
+    "backendless": "^4.3.2",
     "eslint": "^4.15.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
