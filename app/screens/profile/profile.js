@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
 import Container from '../../components/container';
 
@@ -17,7 +17,7 @@ class Profile extends Component {
     headerRight: (
       <TouchableOpacity onPress={() => props.navigation.navigate('EditProfile')}>
         <View style={{ paddingRight: 10, paddingLeft: 20 }}>
-          <Ionicons name="md-more" color="#fff" size={20} />
+          <Icon name="md-more" color="#fff" size={20} />
         </View>
       </TouchableOpacity>
     ),

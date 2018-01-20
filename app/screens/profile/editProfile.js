@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Image, View, TextInput, Text } from 'react-native';
+import { Image, View, TextInput, Text, TouchableOpacity } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import Backendless from 'backendless';
 import Container from '../../components/container';
 import Button from '../../components/button';
 import styles from '../../assets/styles';
+
+const options = {
+
+};
+
+const appId = '';
+const RESTApiKey = '';
 
 class EditProfile extends Component {
   static propTypes = {
@@ -21,7 +29,45 @@ class EditProfile extends Component {
     this.state = {
       firstName: '',
       lastName: '',
+      avatarSource: '',
     };
+  }
+
+  profilePressed = () => {
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.error) {
+        this.props.alertWithType('error', 'Something Went Wrong', response.error);
+      } else if (response.data) {
+        const source = { uri: response.uri };
+        if (response.type) {
+          source.type = response.type;
+        }
+
+        this.setState({
+          avatarSource: `data:image/jpeg;base64,${response.data}`,
+        }, () => {
+          fetch(`https://api.backendless.com/${appId}/${RESTApiKey}/files/binary/profilePictures/${this.props.user.objectId}.jpeg?overwrite=true`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'text/plain',
+              'application-type': 'REST',
+            },
+            body: response.data,
+          }).then((res) => {
+            const currentUser = this.props.user;
+            if (currentUser.profileUrl === '') {
+              currentUser.profileUrl = res._bodyInit.replace(/"/g, '');
+              Backendless.Data.of('Users').save(currentUser)
+                .then(() => this.props.alertWithType('success', 'Success', 'Profile picture updated'))
+                .catch(error => this.props.alertWithType('error', 'Error Saving Profile Picture', error.message));
+            }
+          }).catch((error) => {
+            this.props.alertWithType('error', 'Something Went Wrong', '');
+            console.log(error);
+          });
+        });
+      }
+    });
   }
 
   saveChanges = () => {
@@ -30,7 +76,7 @@ class EditProfile extends Component {
     if (firstName === '' && lastName === '') {
       this.props.alertWithType('info', 'Oops', 'Nothing to update');
     } else {
-      const { user } = this.props.user;
+      const { user } = this.props;
 
       if (firstName !== '') {
         user.firstName = firstName;
@@ -40,7 +86,7 @@ class EditProfile extends Component {
       }
 
       Backendless.UserService.update(user)
-        .then(() => this.props.alertWithType('info', 'Profile Updated', 'Changes saved successfully'))
+        .then(() => this.props.alertWithType('success', 'Profile Updated', 'Changes saved successfully'))
         .catch(error => this.props.alertWithType('error', 'Error Updating', error.message));
     }
   }
@@ -61,16 +107,18 @@ class EditProfile extends Component {
               alignItems: 'center',
             }}
           >
-            <Image
-              source={require('../../assets/default.png')}
-              style={{
-                width: 75,
-                height: 75,
-                borderRadius: 37.2,
-                borderColor: this.props.accent,
-                borderWidth: 2,
-              }}
-            />
+            <TouchableOpacity onPress={this.profilePressed}>
+              <Image
+                source={this.state.avatarSource === '' ? require('../../assets/default.png') : this.state.avatarSource}
+                style={{
+                  width: 75,
+                  height: 75,
+                  borderRadius: 37.2,
+                  borderColor: this.props.accent,
+                  borderWidth: 2,
+                }}
+              />
+            </TouchableOpacity>
             <Text
               style={{
                 color: this.props.text, fontSize: 15, fontStyle: 'italic', paddingTop: 10,
@@ -109,6 +157,7 @@ class EditProfile extends Component {
                 autoCorrect={false}
                 maxLength={15}
                 selectionColor={this.props.accent}
+                onChangeText={text => this.setState({ firstName: text })}
                 style={[styles.input, { backgroundColor: this.props.background, width: '100%', color: this.props.text }]}
               />
             </View>
@@ -135,6 +184,7 @@ class EditProfile extends Component {
                 autoCorrect={false}
                 maxLength={15}
                 selectionColor={this.props.accent}
+                onChangeText={text => this.setState({ lastName: text })}
                 style={[styles.input, { backgroundColor: this.props.background, width: '100%', color: this.props.text }]}
               />
             </View>

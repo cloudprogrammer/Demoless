@@ -29,15 +29,19 @@ class Register extends Component {
       email: '',
       password: '',
       username: '',
+      firstName: '',
+      lastName: '',
       animating: false,
     };
     this._register = this.register.bind(this);
   }
 
   register() {
-    const { email, password, username } = this.state;
+    const {
+      email, password, username, firstName, lastName,
+    } = this.state;
 
-    if (email === '' || password === '' || username === '') {
+    if (email === '' || password === '' || username === '' || firstName === '' || lastName === '') {
       this.props.alertWithType('error', 'Error', 'Fill in all fields');
     } else {
       this.setState({ animating: true });
@@ -45,14 +49,16 @@ class Register extends Component {
         username,
         password,
         email,
+        firstName,
+        lastName,
       });
       Backendless.UserService.register(newUser)
-      .then((registeredUser) => {
-        this.setState({ animating: false });
-        this.props.alertWithType('success', 'Success', 'Registered successfully');
-        this.props.navigation.goBack();
-      })
-      .catch(error => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)));
+        .then(() => {
+          this.setState({ animating: false });
+          this.props.alertWithType('success', 'Success', 'Registered successfully');
+          this.props.navigation.goBack();
+        })
+        .catch(error => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)));
     }
   }
 
@@ -96,6 +102,36 @@ class Register extends Component {
             underlineColorAndroid="transparent"
             ref={(input) => { this.usernameField = input; }}
             onChangeText={text => this.setState({ username: text })}
+            onSubmitEditing={() => this.firstNameField.focus()}
+          />
+          <TextInput
+            placeholder="First Name"
+            style={[Styles.input, { borderBottomColor: this.props.accent, borderBottomWidth: 1, color: this.props.text }]}
+            returnKeyType="next"
+            autoCapitalize="none"
+            autoCorrect={false}
+            maxLength={50}
+            keyboardType="email-address"
+            placeholderTextColor={this.props.text}
+            selectionColor={this.props.accent}
+            underlineColorAndroid="transparent"
+            ref={(input) => { this.firstNameField = input; }}
+            onChangeText={text => this.setState({ firstName: text })}
+            onSubmitEditing={() => this.lastNameField.focus()}
+          />
+          <TextInput
+            placeholder="Last Name"
+            style={[Styles.input, { borderBottomColor: this.props.accent, borderBottomWidth: 1, color: this.props.text }]}
+            returnKeyType="next"
+            autoCapitalize="none"
+            autoCorrect={false}
+            maxLength={50}
+            keyboardType="email-address"
+            placeholderTextColor={this.props.text}
+            selectionColor={this.props.accent}
+            underlineColorAndroid="transparent"
+            ref={(input) => { this.lastNameField = input; }}
+            onChangeText={text => this.setState({ lastName: text })}
             onSubmitEditing={() => this.passwordField.focus()}
           />
           <TextInput

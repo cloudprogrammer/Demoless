@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { View, FlatList, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Backendless from 'backendless';
-import { View, FlatList, Text } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import ProfileImage from '../../components/profileImage';
 import Container from '../../components/container';
 
@@ -17,6 +18,12 @@ class Friends extends Component {
 
   componentDidMount() {
     this.loadFriends();
+    this.setDeviceId();
+  }
+
+  setDeviceId = () => {
+    Backendless.Data.of('Users').save({ objectId: this.props.user.objectId, deviceId: DeviceInfo.getUniqueID() })
+      .catch(error => console.log(error));
   }
 
   loadFriends = () => {
@@ -54,16 +61,21 @@ class Friends extends Component {
                 alignItems: 'center',
               }}
             >
-              <ProfileImage
-                size={50}
-                url={item.profileUrl}
-                showBorder
-              />
-              <Text style={{ color: this.props.text, paddingLeft: 10, fontSize: 20 }}>{item.firstName} {item.lastName}</Text>
+              <TouchableOpacity onPress={() => this.props.navigate('UserProfile', { user: item })} >
+                <ProfileImage
+                  size={50}
+                  url={item.profileUrl}
+                  showBorder
+                />
+                <Text style={{ color: this.props.text, paddingLeft: 10, fontSize: 20 }}>{item.firstName} {item.lastName}</Text>
+              </TouchableOpacity>
             </View>
           ))}
           ListEmptyComponent={(
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{
+                flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 25,
+              }}
+            >
               <Text style={{ color: this.props.text, fontSize: 25 }}>No friends :(</Text>
             </View>
           )}

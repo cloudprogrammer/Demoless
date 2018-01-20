@@ -1,6 +1,7 @@
 import { DrawerItems } from 'react-navigation';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Backendless from 'backendless';
 import { View, TouchableOpacity, Text, AsyncStorage, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import Container from '../container';
@@ -23,7 +24,8 @@ class Drawer extends Component {
       {
         text: 'Log Out',
         onPress: () => {
-          AsyncStorage.removeItem('loggedIn').then(() => {
+          AsyncStorage.removeItem('userId').then(() => {
+            Backendless.Messaging.unregisterDevice();
             this.props.screenProps.rootNavigation.dispatch({
               type: 'Navigation/RESET',
               index: 0,
@@ -50,6 +52,7 @@ class Drawer extends Component {
                 <ProfileImage
                   showBorder
                   size={75}
+                  url={this.props.user.profileUrl}
                 />
               </View>
             </TouchableOpacity>
@@ -77,6 +80,7 @@ class Drawer extends Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.profile.user,
   background: state.theme.backgroundPrimary,
   text: state.theme.text,
   accent: state.theme.accent,

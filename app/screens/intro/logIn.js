@@ -5,14 +5,18 @@ import {
   TextInput,
   Switch,
   AsyncStorage,
+  PushNotificationIOS,
+  Platform,
 } from 'react-native';
 import { connect } from 'react-redux';
 import CircleSnail from 'react-native-progress/CircleSnail';
+import Backendless from 'backendless';
 import PropTypes from 'prop-types';
+import DeviceInfo from 'react-native-device-info';
+import Notifications from 'react-native-push-notification';
 import Styles from '../../assets/styles';
 import Container from '../../components/container';
 import Button from '../../components/button';
-import Backendless from 'backendless';
 import { setProfile } from '../../actions/profile';
 
 class LogIn extends Component {
@@ -44,22 +48,41 @@ class LogIn extends Component {
     } else {
       this.setState({ animating: true });
       Backendless.UserService.login(email, password, rememberLogIn)
-      .then((loggedInUser) => {
-        this.setState({ animating: false });
-        this.props.dispatch(setProfile(loggedInUser)); 
-        if (rememberLogIn) {
-          AsyncStorage.setItem('userId', loggedInUser.objectId)
-          .then(() => this.navigate())
-          .catch(error => console.log(error));
-        } else {
-          this.navigate();
-        }
-      })
-      .catch((error) => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)))
+        .then((loggedInUser) => {
+          this.setState({ animating: false });
+          this.props.dispatch(setProfile(loggedInUser));
+          if (rememberLogIn) {
+            AsyncStorage.setItem('userId', loggedInUser.objectId)
+              .then(() => this.navigate())
+              .catch(error => console.log(error));
+          } else {
+            this.navigate();
+          }
+        })
+        .catch(error => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)));
     }
   }
 
   navigate = () => {
+    Notifications.configure({
+      onRegister(token) {
+        Backendless.setupDevice({ uuid: DeviceInfo.getUniqueID(), platform: Platform.OS.toUpperCase(), version: DeviceInfo.getSystemVersion() });
+        Backendless.Messaging.registerDevice(token.token, ['default'], 1606470357000);
+      },
+      onNotification(notification) {
+        console.log('NOTIFICATION:', notification);
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+      senderID: 'gcm_senderid',
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
+
     this.props.navigation.dispatch({
       type: 'Navigation/RESET',
       index: 0,
@@ -74,12 +97,8 @@ class LogIn extends Component {
     } else {
       this.setState({ animating: true });
       Backendless.UserService.restorePassword(email)
-      .then(() => this.setState({ animating: false }, () => this.props.alertWithType('success', 'Success', 'Password reset link sent')))
-      .catch(error => this.setState({ animating: false}, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)))
-      setTimeout(() => {
-        ;
-        ;
-      }, 3000);
+        .then(() => this.setState({ animating: false }, () => this.props.alertWithType('success', 'Success', 'Password reset link sent')))
+        .catch(error => this.setState({ animating: false }, () => this.props.alertWithType('error', 'Something Went Wrong', error.message)));
     }
   }
 

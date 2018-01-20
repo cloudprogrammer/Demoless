@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Icon';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
 import { NavBar } from '../components/header';
 import { Intro, Loading, LogIn, Register } from '../screens/intro';
@@ -19,7 +19,7 @@ const FriendsNav = StackNavigator({
       headerLeft: (
         <TouchableOpacity onPress={() => props.screenProps.drawerNavigation.navigate('DrawerOpen')}>
           <View style={{ paddingLeft: 10, paddingRight: 20 }}>
-            <Ionicons name="md-menu" color="#fff" size={20} />
+            <Icon name="md-menu" color="#fff" size={20} />
           </View>
         </TouchableOpacity>
       ),
@@ -38,7 +38,7 @@ const ProfileNav = StackNavigator({
       headerLeft: (
         <TouchableOpacity onPress={() => props.screenProps.drawerNavigation.navigate('DrawerOpen')}>
           <View style={{ paddingLeft: 10, paddingRight: 20 }}>
-            <Ionicons name="md-menu" color="#fff" size={20} />
+            <Icon name="md-menu" color="#fff" size={20} />
           </View>
         </TouchableOpacity>
       ),
@@ -64,7 +64,7 @@ const SettingsNav = StackNavigator({
       headerLeft: (
         <TouchableOpacity onPress={() => props.screenProps.drawerNavigation.navigate('DrawerOpen')}>
           <View style={{ paddingLeft: 10, paddingRight: 20 }}>
-            <Ionicons name="md-menu" color="#fff" size={20} />
+            <Icon name="md-menu" color="#fff" size={20} />
           </View>
         </TouchableOpacity>
       ),
