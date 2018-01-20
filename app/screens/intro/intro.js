@@ -28,7 +28,10 @@ class Intro extends Component {
       <Container>
         <View style={Styles.center}>
           <Text style={[Styles.aboutText, { paddingHorizontal: 10, color: this.props.text }]}>
-                Skeleton is a boiler plate app for React Native, it has integration with:
+                Demoless is a Backendless demo app, it has integration with:
+          </Text>
+          <Text style={[Styles.aboutText, { paddingTop: 10, color: this.props.text }]}>
+                - Backendless (Messaging, Data & Storage)
           </Text>
           <Text style={[Styles.aboutText, { paddingTop: 10, color: this.props.text }]}>
                 - React Navigation
@@ -49,7 +52,7 @@ class Intro extends Component {
                 - React Native Extended Stylesheet
           </Text>
           <Text style={[Styles.aboutText, { paddingTop: 10, paddingHorizontal: 10, color: this.props.text }]}>
-                Skeleton also has a theming system and a loading screen
+                Demoless also has a theming system and an initialisation screen frameds as a loading sreen.
           </Text>
         </View>
         <View style={Styles.bottomButton}>
